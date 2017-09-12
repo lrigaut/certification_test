@@ -13,35 +13,37 @@ import java.util.stream.Stream;
  */
 public enum Certification
 {
-  AO("AO"),
-  PGR("PGR"),
-  G("G"),
-  LiveUnclassified("Live/Unclassified");
+    AO,
+    PGR,
+    G,
+    LiveUnclassified;
 
-  private final static Map<String, Certification> byLabel = new HashMap<>();
+    private static Map<String, Certification> certificationMap = new HashMap<String, Certification>();
 
-  public final String label;
+    static {
+        certificationMap.put("AO", AO);
+        certificationMap.put("PGR", PGR);
+        certificationMap.put("G", G);
+        certificationMap.put("Live/Unclassified", LiveUnclassified);
+    }
 
-  private Certification(String label)
-  {
-    this.label = label;
-  }
+//    @JsonCreator
+//    public static Certification forValue(String value) {
+//        return certificationMap.get(value.toLowerCase());
+//    }
 
-  @JsonCreator
-  public static Certification fromLabel(final String key)
-  {
-    return byLabel.computeIfAbsent(key, k -> Stream.of(values()).filter(e -> e.label.equals(key)).findAny().orElseThrow(IllegalArgumentException::new));
-  }
+    @JsonValue
+    public String toValue() {
+        for (Map.Entry<String, Certification> entry : certificationMap.entrySet()) {
+            if (entry.getValue().toString().toLowerCase().equals(this.toString()))
+                return entry.getKey();
+        }
 
-  @JsonValue
-  public String getLabel()
-  {
-    return label;
-  }
+        return "bidon";
+    }
 
-//  @Override
-//  public String toString()
-//  {
-//    return this.name().toLowerCase();
-//  }
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 }
